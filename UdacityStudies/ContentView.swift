@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+
     var body: some View {
         TabView {
             Tab("Joke", systemImage: "message.circle") {
@@ -15,9 +16,8 @@ struct ContentView: View {
             .badge(2)
 
             Tab("User", systemImage: "person.circle") {
-                RandomUser(modelData: RandomUserData())
+                UserView()
             }
-            .badge(1)
         }
     }
 }
