@@ -13,13 +13,14 @@ struct User: Codable, Identifiable {
     private(set) var location: Location
 
     var id: String { UUID().uuidString }
+
     var fullname: String {
         name.first + " " + name.last
     }
+
     var fullAddress: String {
         return "\(location.street.number) \(location.street.name), \(location.city), \(location.state), \(location.country)"
     }
-
 
     enum CodingKeys: String, CodingKey {
         case name, email, location, picture
