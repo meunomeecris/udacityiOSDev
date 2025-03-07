@@ -1,21 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isSignedIn: Bool = false
 
     var body: some View {
-        TabView {
-            Tab("Translaters", systemImage: "globe") {
+        if isSignedIn {
+            TabView {
                 TranslatorView(textToTranslate: "", translatedText: "")
-            }
-            
-            Tab("Joke", systemImage: "message.circle") {
-                JokeView(modelData: FetchData())
-            }
-            .badge(2)
+                    .tabItem {
+                        Label("Translaters", systemImage: "globe")
+                    }
 
-            Tab("User", systemImage: "person.circle") {
-                UserView()
+                SingOutView(isSignedIn: $isSignedIn)
+                    .tabItem {
+                        Label("User", systemImage: "person.circle")
+                    }
             }
+        } else {
+            SignInView(isSignedIn: $isSignedIn)
         }
     }
 }
