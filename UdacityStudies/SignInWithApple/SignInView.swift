@@ -13,11 +13,84 @@ import Security
 struct SignInView: View {
     @Binding var isSignedIn: Bool
 
-    @State private var userIdentifier: String?
+    @State var userIdentifier: String?
     @State var userFullName: String?
     @State var email: String?
 
-    private let appleUserID: String = "appleUserID"
+    private let userIDKey: String = "appleUserID"
+    private let userFullNameKey = "appleUserFullName"
+    private let userEmailKey = "appleUserEmail"
+
+
+    private func configureRequest(_ request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = [.fullName, .email]
+    }
+
+    private func handleCompletion(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            handleAuthSuccess(authorization)
+        case .failure(let error):
+            print("Authorization failed: \(error.localizedDescription)")
+        }
+
+    }
+
+    private func handleAuthSuccess(_ result: ASAuthorization) {
+        guard let credential = result.credential as? ASAuthorizationAppleIDCredential else { return }
+
+        let userIdentifier = credential.user
+        let fullName = credential.fullName
+        let email = credential.email
+
+        let fullNameString = "\(fullName?.givenName ?? "") \(fullName?.familyName ?? "")"
+
+
+        print("User ID: \(userIdentifier)")
+        print("FullName: \(fullNameString)")
+        print("Email: \(email ?? "No Email")")
+
+        
+
+        // Salvar user infos in Keychain
+        KeychainHelper.shared.save(key: userIDKey, data: userIdentifier.data(using: .utf8)!)
+
+        if let email = email {
+            KeychainHelper.shared.save(key: userEmailKey, data: email.data(using: .utf8)!)
+        }
+
+        if !fullNameString.trimmingCharacters(in: .whitespaces).isEmpty {
+            KeychainHelper.shared.save(key: userFullNameKey, data: fullNameString.data(using: .utf8)!)
+        }
+
+        // Update state
+        self.userIdentifier = userIdentifier
+        self.email = email
+        self.userFullName = fullNameString
+        self.isSignedIn = true
+
+    }
+
+    private func loadUserIdentifier() {
+        if let savedData = KeychainHelper.shared.retrieve(key: userIDKey),
+           let savedUserID = String(data: savedData, encoding: .utf8) {
+            print("UserID from Keychain: \(String(describing: savedUserID))")
+            self.userIdentifier = savedUserID
+            self.isSignedIn = true
+        }
+
+        if let savedFullNameData = KeychainHelper.shared.retrieve(key: userFullNameKey),
+           let savedFullName = String(data: savedFullNameData, encoding: .utf8) {
+            print("FullName from Keychain: \(String(describing: savedFullName))")
+            self.userFullName = savedFullName
+        }
+
+        if let savedEmailData = KeychainHelper.shared.retrieve(key: userEmailKey),
+           let savedEmail = String(data: savedEmailData, encoding: .utf8) {
+            print("Email from Keychain: \(savedEmail)")
+            self.email = savedEmail
+        }
+    }
 
     var body: some View {
         VStack {
@@ -35,7 +108,7 @@ struct SignInView: View {
                 .foregroundStyle(.white)
 
             Text("Are you curious about what I am learning? Just sign in!")
-                .font(.subheadline)
+                .font(.body)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.white)
 
@@ -52,50 +125,6 @@ struct SignInView: View {
         .padding()
         .containerRelativeFrame([.horizontal, .vertical])
         .background(Gradient(colors: [.teal, .cyan, .blue]).opacity(0.8))
-    }
-
-    private func configureRequest(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName, .email]
-    }
-
-    private func handleCompletion(_ result: Result<ASAuthorization, Error>) {
-        switch result {
-        case .success(let authorization):
-            handleAuthSuccess(authorization)
-        case .failure(let error):
-            print("Authorization failed: \(error.localizedDescription)")
-        }
-
-    }
-
-    private func handleAuthSuccess(_ result: ASAuthorization) {
-        guard let appleIDCredential = result.credential as? ASAuthorizationAppleIDCredential else { return }
-
-        let userIdentifier = appleIDCredential.user
-        let fullName = appleIDCredential.fullName
-        let email = appleIDCredential.email
-
-        print("User ID: \(userIdentifier)")
-        print("FullName: \(String(describing: userFullName))")
-        print("Email: \(String(describing: email))")
-
-        // Salvar User ID no Keychain
-        KeychainHelper.shared.save(key: appleUserID, data: userIdentifier.data(using: .utf8)!)
-
-        // Atualizar estado no SwiftUI
-        self.userIdentifier = userIdentifier
-        self.email = email
-        self.userFullName = "\(fullName?.givenName ?? "") \(fullName?.familyName ?? "")"
-        self.isSignedIn = true
-
-    }
-
-    private func loadUserIdentifier() {
-        if let savedData = KeychainHelper.shared.retrieve(key: appleUserID),
-           let savedUserID = String(data: savedData, encoding: .utf8) {
-            self.userIdentifier = savedUserID
-            self.isSignedIn = true
-        }
     }
 }
 

@@ -21,19 +21,18 @@ struct SingOutView: View {
                 .frame(width: 80, height: 80)
                 .padding(.top, 50)
             
-            Text("\(userFullName ?? "John Doe"), \n Welcome to my Udacity Studies!")
+            Text("\(userFullName ?? "Cris Messias"), \n Welcome to my Udacity Studies!")
                 .bold()
                 .font(.title)
                 .multilineTextAlignment(.center)
 
-            Text("Email: \(email ?? "JohnDoe@example.com")")
+            Text("Email: \(email ?? "meunomeecriss@gmail.com")")
                 .font(.headline)
                 .multilineTextAlignment(.leading)
 
-            Text("User ID: \(userIdentifier ?? "Apple Best User")")
+            Text("User ID: \(userIdentifier ?? "123456789")")
                 .font(.headline)
                 .multilineTextAlignment(.leading)
-
 
             Spacer()
 
@@ -42,8 +41,8 @@ struct SingOutView: View {
                 print("User is sign out")
             }
             .padding()
-            .foregroundStyle(.white)
-            .background(.black)
+            .foregroundStyle(.black)
+            .background(.white)
         }
         .padding()
     }
