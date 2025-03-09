@@ -9,9 +9,15 @@ import SwiftUI
 
 struct SingOutView: View {
     @Binding var isSignedIn: Bool
-    @State var userIdentifier: String?
-    @State var userFullName: String?
-    @State var email: String?
+    @State private var userIdentifier: String?
+    @State private var userFullName: String?
+    @State private var email: String?
+
+    private func signOut() {
+        KeychainHelper.shared.delete(key: "appleUserID")
+        self.userIdentifier = nil
+        self.isSignedIn = false
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -45,11 +51,5 @@ struct SingOutView: View {
             .background(.white)
         }
         .padding()
-    }
-
-    private func signOut() {
-        KeychainHelper.shared.delete(key: "appleUserID")
-        self.userIdentifier = nil
-        self.isSignedIn = false
     }
 }
