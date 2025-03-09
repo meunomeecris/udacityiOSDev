@@ -1,22 +1,18 @@
-//
-//  SignOut.swift
-//  UdacityStudies
-//
-//  Created by Cris Messias on 07/03/25.
-//
-
 import SwiftUI
+import KeychainSwift
 
-struct SingOutView: View {
-    @Binding var isSignedIn: Bool
-    @State private var userIdentifier: String?
+struct SignOutView: View {
+    let keychain = KeychainSwift()
+    @AppStorage("isSignedIn") var isSignedIn = false
+
+    @State private var userIdentifier: String? = KeychainSwift().get("appleUserID")
     @State private var userFullName: String?
     @State private var email: String?
 
     private func signOut() {
-        KeychainHelper.shared.delete(key: "appleUserID")
-        self.userIdentifier = nil
-        self.isSignedIn = false
+        keychain.clear()
+        isSignedIn = false
+        print("User signed out")
     }
 
     var body: some View {
@@ -32,19 +28,20 @@ struct SingOutView: View {
                 .font(.title)
                 .multilineTextAlignment(.center)
 
-            Text("Email: \(email ?? "meunomeecriss@gmail.com")")
-                .font(.headline)
-                .multilineTextAlignment(.leading)
-
-            Text("User ID: \(userIdentifier ?? "123456789")")
-                .font(.headline)
-                .multilineTextAlignment(.leading)
+            VStack(alignment:.leading ) {
+                Text("Email: \(email ?? "meunomeecriss@gmail.com")")
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                
+                Text("User ID: \(userIdentifier ?? "ID not found")")
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+            }
 
             Spacer()
 
             Button("Sign Out", systemImage:"x.circle") {
                 signOut()
-                print("User is sign out")
             }
             .padding()
             .foregroundStyle(.black)
