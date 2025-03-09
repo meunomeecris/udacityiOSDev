@@ -1,20 +1,25 @@
 import SwiftUI
+import KeychainSwift
 
 struct ContentView: View {
+    @AppStorage("isSignedIn") var isSignedIn = false
 
     var body: some View {
-        TabView {
-            Tab("Translaters", systemImage: "globe") {
-                TranslatorView(textToTranslate: "", translatedText: "")
-            }
-            
-            Tab("Joke", systemImage: "message.circle") {
-                JokeView(modelData: FetchData())
-            }
-            .badge(2)
+        Group {
+            if isSignedIn {
+                TabView {
+                    TranslatorView(textToTranslate: "", translatedText: "")
+                        .tabItem {
+                            Label("Translaters", systemImage: "globe")
+                        }
 
-            Tab("User", systemImage: "person.circle") {
-                UserView()
+                    SignOutView()
+                        .tabItem {
+                            Label("User", systemImage: "person.circle")
+                        }
+                }
+            } else {
+                SignInView()
             }
         }
     }
