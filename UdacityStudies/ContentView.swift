@@ -12,10 +12,6 @@ struct ContentView: View {
                         .tabItem {
                             Label("Weather", systemImage: "cloud.sun")
                         }
-//                    TranslatorView(textToTranslate: "", translatedText: "")
-//                        .tabItem {
-//                            Label("Translater", systemImage: "globe")
-//                        }
                     SignOutView()
                         .tabItem {
                             Label("User", systemImage: "person.circle")
