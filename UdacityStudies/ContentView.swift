@@ -8,11 +8,14 @@ struct ContentView: View {
         Group {
             if isSignedIn {
                 TabView {
-                    TranslatorView(textToTranslate: "", translatedText: "")
+                    WeatherView()
                         .tabItem {
-                            Label("Translaters", systemImage: "globe")
+                            Label("Weather", systemImage: "cloud.sun")
                         }
-
+//                    TranslatorView(textToTranslate: "", translatedText: "")
+//                        .tabItem {
+//                            Label("Translater", systemImage: "globe")
+//                        }
                     SignOutView()
                         .tabItem {
                             Label("User", systemImage: "person.circle")

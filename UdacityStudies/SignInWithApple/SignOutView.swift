@@ -23,13 +23,13 @@ struct SignOutView: View {
                 .frame(width: 80, height: 80)
                 .padding(.top, 50)
             
-            Text("\(userFullName ?? "Cris Messias"), \n Welcome to my Udacity Studies!")
+            Text("\(userFullName ?? "User"), \n Welcome to my Udacity Studies!")
                 .bold()
                 .font(.title)
                 .multilineTextAlignment(.center)
 
             VStack(alignment:.leading ) {
-                Text("Email: \(email ?? "meunomeecriss@gmail.com")")
+                Text("Email: \(email ?? "email")")
                     .font(.headline)
                     .multilineTextAlignment(.leading)
                 
