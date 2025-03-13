@@ -12,6 +12,10 @@ struct ContentView: View {
                         .tabItem {
                             Label("Weather", systemImage: "cloud.sun")
                         }
+                    LazyLoading()
+                        .tabItem {
+                            Label("Connectivity", systemImage: "cable.connector.slash")
+                        }
                     SignOutView()
                         .tabItem {
                             Label("User", systemImage: "person.circle")
